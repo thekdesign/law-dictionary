@@ -2,7 +2,7 @@
     "name": "law-dictionary",
     "private": true,
     "version": "1.0.0",
-    "description": "法律奇想終極全紀錄：22 場與幽默 AI 律師的奇案問答（純前端網站）",
+    "description": "法律奇想終極全紀錄：23 場與幽默 AI 律師的奇案問答（純前端網站）",
     "main": "resources/js/index.js",
     "scripts": {
         "development": "NODE_ENV=development vite build --config vite.development.config.mjs",

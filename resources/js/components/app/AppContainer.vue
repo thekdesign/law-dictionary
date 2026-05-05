@@ -6,7 +6,7 @@
                 <span class="app-shell__title">
                     法律奇想終極全紀錄
                 </span>
-                <span class="app-shell__sub">22 場奇案問答</span>
+                <span class="app-shell__sub">23 場奇案問答</span>
             </RouterLink>
 
             <nav class="app-shell__nav">

@@ -1,7 +1,7 @@
 <template>
     <div class="home">
         <section class="home__hero">
-            <div class="home__hero-tag">⚖️ 22 場奇案 · 5 大主題</div>
+            <div class="home__hero-tag">⚖️ {{ caseStore.list.length - 1 }} 場奇案 · {{ partList.length }} 大主題</div>
             <h1 class="home__title">法律奇想終極全紀錄</h1>
             <p class="home__lead">
                 從衛生紙打人到女鬼生子，從通靈居士到移動城堡——

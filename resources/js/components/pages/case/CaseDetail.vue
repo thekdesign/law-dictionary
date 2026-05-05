@@ -78,7 +78,7 @@ export default {
         const partInfo = computed(() => partMap.get(caseItem.value?.partKey) || {});
         const accent = computed(() => partInfo.value.accent || '#3E5790');
 
-        // 上下案僅在「正規 22 案」之間切換，結語頁不串接
+        // 上下案僅在「正規案件」之間切換，結語頁不串接
         const sequentialList = computed(() => caseStore.list.filter((c) => c.id !== 99));
         const currentIndex = computed(() => sequentialList.value.findIndex((c) => c.id === caseId.value));
         const prevCase = computed(() => (currentIndex.value > 0 ? sequentialList.value[currentIndex.value - 1] : null));
