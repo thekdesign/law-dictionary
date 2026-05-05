@@ -8,7 +8,9 @@
                 <span class="font-serif font-bold text-base sm:text-lg tracking-wider">
                     法律奇想終極全紀錄
                 </span>
-                <span class="hidden sm:inline text-xs opacity-75 tracking-wider">37 場奇案問答</span>
+                <span class="hidden sm:inline text-xs opacity-75 tracking-wider">
+                    {{ caseStore.list.length - 1 }} 場奇案問答
+                </span>
             </RouterLink>
 
             <nav class="flex gap-1 ml-auto">
@@ -36,12 +38,14 @@
 </template>
 
 <script>
+import {useCaseStore} from 'stores/case/case';
 import {mainNavList} from 'maps/navigation/MainNav';
 
 export default {
     name: 'AppContainer',
     setup() {
-        return {mainNavList};
+        const caseStore = useCaseStore();
+        return {mainNavList, caseStore};
     },
 };
 </script>
