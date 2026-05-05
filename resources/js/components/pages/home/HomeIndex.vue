@@ -23,10 +23,10 @@
 
         <section class="flex flex-wrap gap-1.5 mb-6">
             <button
-                class="rounded-full border bg-white px-4 py-1.5 text-sm transition-colors"
+                class="rounded-full border px-4 py-1.5 text-sm transition-colors"
                 :class="activePartKey === ''
                     ? 'border-primary-500 bg-primary-500 text-white'
-                    : 'border-paper-300 text-gray-700 hover:border-primary-500 hover:text-primary-500'"
+                    : 'border-paper-300 bg-white text-gray-700 hover:border-primary-500 hover:text-primary-500'"
                 @click="activePartKey = ''"
             >
                 全部
@@ -34,8 +34,8 @@
             <button
                 v-for="p in partList"
                 :key="p.key"
-                class="rounded-full border bg-white px-4 py-1.5 text-sm transition-colors"
-                :class="activePartKey === p.key ? 'text-white' : 'border-paper-300 text-gray-700'"
+                class="rounded-full border px-4 py-1.5 text-sm transition-colors"
+                :class="activePartKey === p.key ? 'text-white' : 'border-paper-300 bg-white text-gray-700'"
                 :style="activePartKey === p.key
                     ? {background: p.accent, borderColor: p.accent}
                     : {'--hover-accent': p.accent}"
