@@ -1,0 +1,26 @@
+@use 'reset-css/reset.css';
+@use 'normalize';
+@use '../abstracts/variables' as *;
+@use '../abstracts/functions' as *;
+@use 'mixins' as *;
+@use 'functions' as *;
+
+@tailwind utilities;
+
+html, body {
+    font-family: 'Noto Serif TC', 'Noto Sans TC', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    color: theme('colors.gray.900');
+    -webkit-font-smoothing: antialiased;
+}
+
+body {
+    background:
+        radial-gradient(circle at 0% 0%, theme('colors.paper.100') 0%, theme('colors.paper.200') 60%),
+        theme('colors.paper.100');
+    min-height: 100vh;
+}
+
+::selection {
+    background: theme('colors.gold.300');
+    color: theme('colors.primary.900');
+}
