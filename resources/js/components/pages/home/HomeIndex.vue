@@ -1,23 +1,32 @@
 <template>
-    <div class="home">
-        <section class="home__hero">
-            <div class="home__hero-tag">⚖️ {{ caseStore.list.length - 1 }} 場奇案 · {{ partList.length }} 大主題</div>
-            <h1 class="home__title">法律奇想終極全紀錄</h1>
-            <p class="home__lead">
+    <div>
+        <section
+            class="mb-7 rounded-[18px] border border-paper-300 px-6 py-10 text-center shadow-[0_4px_18px_rgba(31,48,87,0.05)]"
+            style="background: linear-gradient(180deg, rgba(255,255,255,0.6) 0%, rgba(255,255,255,0.2) 100%), #F4ECDA;"
+        >
+            <div class="inline-block rounded-full bg-gold-100 px-3.5 py-1 text-xs tracking-wider text-gold-700 mb-4">
+                ⚖️ {{ caseStore.list.length - 1 }} 場奇案 · {{ partList.length }} 大主題
+            </div>
+            <h1 class="font-serif font-bold text-3xl sm:text-4xl text-primary-800 m-0 mb-3 tracking-wide">
+                法律奇想終極全紀錄
+            </h1>
+            <p class="max-w-xl mx-auto text-gray-700 text-sm leading-loose">
                 從衛生紙打人到女鬼生子，從通靈居士到移動城堡——
                 每一個你以為「這也能告？」的情境，都認真用法條跟你聊過。
             </p>
-            <div class="home__stats">
-                <span><strong>{{ caseStore.list.length - 1 }}</strong> 案</span>
-                <span><strong>{{ partList.length }}</strong> 大分類</span>
-                <span><strong>1</strong> 篇結語</span>
+            <div class="flex justify-center gap-6 mt-5 text-sm text-gray-600">
+                <span><strong class="font-serif text-base text-primary-700 mr-1">{{ caseStore.list.length - 1 }}</strong>案</span>
+                <span><strong class="font-serif text-base text-primary-700 mr-1">{{ partList.length }}</strong>大分類</span>
+                <span><strong class="font-serif text-base text-primary-700 mr-1">1</strong>篇結語</span>
             </div>
         </section>
 
-        <section class="home__filter">
+        <section class="flex flex-wrap gap-1.5 mb-6">
             <button
-                class="home__filter-chip"
-                :class="{'is-active': activePartKey === ''}"
+                class="rounded-full border bg-white px-4 py-1.5 text-sm transition-colors"
+                :class="activePartKey === ''
+                    ? 'border-primary-500 bg-primary-500 text-white'
+                    : 'border-paper-300 text-gray-700 hover:border-primary-500 hover:text-primary-500'"
                 @click="activePartKey = ''"
             >
                 全部
@@ -25,9 +34,11 @@
             <button
                 v-for="p in partList"
                 :key="p.key"
-                class="home__filter-chip"
-                :class="{'is-active': activePartKey === p.key}"
-                :style="{'--accent': p.accent}"
+                class="rounded-full border bg-white px-4 py-1.5 text-sm transition-colors"
+                :class="activePartKey === p.key ? 'text-white' : 'border-paper-300 text-gray-700'"
+                :style="activePartKey === p.key
+                    ? {background: p.accent, borderColor: p.accent}
+                    : {'--hover-accent': p.accent}"
                 @click="activePartKey = p.key"
             >
                 {{ p.emoji }} {{ p.label }}
@@ -37,28 +48,73 @@
         <section
             v-for="part in displayParts"
             :key="part.key"
-            class="home__part"
+            class="mt-9"
         >
-            <header class="home__part-head">
-                <h2 class="home__part-title" :style="{'--accent': part.accent}">
-                    <span class="home__part-emoji">{{ part.emoji }}</span>
+            <header class="mb-4">
+                <h2
+                    class="m-0 mb-1 flex items-center gap-2 pb-2 font-serif text-xl font-bold text-gray-900 border-b-2"
+                    :style="{borderColor: part.accent}"
+                >
+                    <span class="text-2xl">{{ part.emoji }}</span>
                     {{ part.label }}
                 </h2>
-                <p class="home__part-blurb">{{ part.blurb }}</p>
+                <p class="m-0 text-sm text-gray-600">{{ part.blurb }}</p>
             </header>
-            <div class="home__grid">
+            <div class="grid gap-4 [grid-template-columns:repeat(auto-fill,minmax(280px,1fr))]">
                 <CaseCard v-for="c in part.cases" :key="c.id" :case-item="c" />
             </div>
         </section>
 
-        <section class="home__epilogue" v-if="epilogue">
-            <RouterLink :to="{name: 'CASE_DETAIL', params: {caseId: epilogue.id}}" class="home__epilogue-link">
-                <span class="home__epilogue-emoji">{{ epilogue.emoji }}</span>
-                <div>
-                    <h3 class="home__epilogue-title">{{ epilogue.title }}</h3>
-                    <p class="home__epilogue-hook">{{ epilogue.hook }}</p>
+        <section v-if="adultCases.length" class="mt-10">
+            <button
+                v-if="!showAdult"
+                class="flex w-full items-center gap-4 rounded-[14px] border-2 border-dashed border-seal-400 bg-paper-100 px-5 py-4 text-left transition-colors hover:bg-seal-100 hover:border-seal-500"
+                @click="confirmAdult"
+            >
+                <span class="text-3xl leading-none">🔞</span>
+                <div class="flex-1">
+                    <h3 class="m-0 mb-1 font-serif text-base font-bold text-seal-700">
+                        18+ 案件區（{{ adultCases.length }} 篇）
+                    </h3>
+                    <p class="m-0 text-xs text-gray-600 leading-relaxed">
+                        含成人或敏感主題，點擊確認您已年滿 18 歲後展開。
+                    </p>
                 </div>
-                <span class="home__epilogue-cta">→</span>
+                <span class="whitespace-nowrap text-sm font-bold text-seal-600">展開 ▾</span>
+            </button>
+
+            <div v-else class="rounded-[14px] border border-seal-300 bg-paper-100 px-5 pt-5 pb-6">
+                <header class="mb-2 flex items-center">
+                    <h2 class="m-0 flex items-center gap-1.5 font-serif text-xl text-seal-700">
+                        <span class="text-xl">🔞</span> 18+ 案件區
+                    </h2>
+                    <button
+                        class="ml-auto rounded-full border border-seal-400 bg-transparent px-3 py-1 text-xs text-seal-600 hover:bg-seal-100"
+                        @click="showAdult = false"
+                    >
+                        收合 ▴
+                    </button>
+                </header>
+                <p class="m-0 mb-4 text-sm text-gray-600 leading-relaxed">
+                    以下案件涉及性、暴力或其他成人主題。法律分析仍秉持「認真講幹話」精神，但建議成年讀者再展開。
+                </p>
+                <div class="grid gap-4 [grid-template-columns:repeat(auto-fill,minmax(280px,1fr))]">
+                    <CaseCard v-for="c in adultCases" :key="c.id" :case-item="c" />
+                </div>
+            </div>
+        </section>
+
+        <section v-if="epilogue" class="mt-10">
+            <RouterLink
+                :to="{name: 'CASE_DETAIL', params: {caseId: epilogue.id}}"
+                class="flex items-center gap-4 rounded-[14px] bg-primary-800 px-6 py-4 text-paper-100 transition-colors hover:bg-primary-700 shadow-[0_4px_18px_rgba(10,20,40,0.18)]"
+            >
+                <span class="text-3xl leading-none">{{ epilogue.emoji }}</span>
+                <div class="flex-1">
+                    <h3 class="m-0 mb-1 font-serif text-base text-gold-200">{{ epilogue.title }}</h3>
+                    <p class="m-0 text-sm opacity-85">{{ epilogue.hook }}</p>
+                </div>
+                <span class="text-2xl text-gold-300">→</span>
             </RouterLink>
         </section>
     </div>
@@ -76,12 +132,19 @@ export default {
     setup() {
         const caseStore = useCaseStore();
         const activePartKey = ref('');
+        const showAdult = ref(false);
 
         const epilogue = computed(() => caseStore.list.find((c) => c.id === 99));
         const regularCases = computed(() => caseStore.list.filter((c) => c.id !== 99));
+        // 主網格只顯示非 18+ 案件
+        const safeCases = computed(() => regularCases.value.filter((c) => !c.isAdult));
+        // 18+ 案件單獨收進可摺疊區
+        const adultCases = computed(() => regularCases.value
+            .filter((c) => c.isAdult)
+            .filter((c) => activePartKey.value === '' || c.partKey === activePartKey.value));
 
         const displayParts = computed(() => {
-            const grouped = regularCases.value.reduce((acc, c) => {
+            const grouped = safeCases.value.reduce((acc, c) => {
                 (acc[c.partKey] = acc[c.partKey] || []).push(c);
                 return acc;
             }, {});
@@ -91,187 +154,22 @@ export default {
                 .filter((p) => p.cases.length > 0);
         });
 
+        const confirmAdult = () => {
+            if (window.confirm('本區內容涉及性、暴力或其他成人主題。\n您是否已年滿 18 歲？')) {
+                showAdult.value = true;
+            }
+        };
+
         return {
             caseStore,
             partList,
             activePartKey,
             displayParts,
+            adultCases,
+            showAdult,
+            confirmAdult,
             epilogue,
         };
     },
 };
 </script>
-
-<style lang="scss" scoped>
-.home {
-    &__hero {
-        padding: 2.4rem 1.5rem 2.6rem;
-        margin-bottom: 1.8rem;
-        text-align: center;
-        background:
-            linear-gradient(180deg, rgba(255, 255, 255, 0.6) 0%, rgba(255, 255, 255, 0.2) 100%),
-            theme('colors.paper.200');
-        border-radius: 18px;
-        border: 1px solid theme('colors.paper.300');
-        box-shadow: 0 4px 18px rgba(31, 48, 87, 0.05);
-    }
-
-    &__hero-tag {
-        display: inline-block;
-        padding: 0.3rem 0.85rem;
-        font-size: 0.78rem;
-        letter-spacing: 0.06em;
-        color: theme('colors.gold.700');
-        background: theme('colors.gold.100');
-        border-radius: 999px;
-        margin-bottom: 1rem;
-    }
-
-    &__title {
-        font-family: 'Noto Serif TC', serif;
-        font-weight: 700;
-        font-size: clamp(1.6rem, 4vw, 2.3rem);
-        color: theme('colors.primary.800');
-        margin: 0 0 0.7rem;
-        letter-spacing: 0.02em;
-    }
-
-    &__lead {
-        max-width: 580px;
-        margin: 0 auto;
-        color: theme('colors.gray.700');
-        font-size: 0.95rem;
-        line-height: 1.85;
-    }
-
-    &__stats {
-        display: flex;
-        justify-content: center;
-        gap: 1.5rem;
-        margin-top: 1.4rem;
-        font-size: 0.85rem;
-        color: theme('colors.gray.600');
-
-        strong {
-            color: theme('colors.primary.700');
-            font-size: 1.1rem;
-            margin-right: 0.2rem;
-            font-family: 'Noto Serif TC', serif;
-        }
-    }
-
-    &__filter {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 0.45rem;
-        margin-bottom: 1.5rem;
-    }
-
-    &__filter-chip {
-        --accent: theme('colors.primary.500');
-
-        padding: 0.4rem 0.95rem;
-        border-radius: 999px;
-        background: theme('colors.white');
-        border: 1px solid theme('colors.paper.300');
-        font-size: 0.85rem;
-        color: theme('colors.gray.700');
-        cursor: pointer;
-        transition: all 0.18s;
-
-        &:hover {
-            border-color: var(--accent);
-            color: var(--accent);
-        }
-
-        &.is-active {
-            background: var(--accent);
-            border-color: var(--accent);
-            color: theme('colors.white');
-        }
-    }
-
-    &__part {
-        margin-top: 2.2rem;
-    }
-
-    &__part-head {
-        margin-bottom: 1rem;
-    }
-
-    &__part-title {
-        --accent: theme('colors.primary.700');
-
-        display: flex;
-        align-items: center;
-        gap: 0.55rem;
-        font-family: 'Noto Serif TC', serif;
-        font-weight: 700;
-        font-size: 1.25rem;
-        color: theme('colors.gray.900');
-        margin: 0 0 0.3rem;
-        padding-bottom: 0.55rem;
-        border-bottom: 2px solid var(--accent);
-    }
-
-    &__part-emoji {
-        font-size: 1.4rem;
-    }
-
-    &__part-blurb {
-        margin: 0;
-        font-size: 0.85rem;
-        color: theme('colors.gray.600');
-    }
-
-    &__grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-        gap: 0.95rem;
-    }
-
-    &__epilogue {
-        margin-top: 2.6rem;
-    }
-
-    &__epilogue-link {
-        display: flex;
-        align-items: center;
-        gap: 1rem;
-        padding: 1.1rem 1.4rem;
-        background: theme('colors.primary.800');
-        color: theme('colors.paper.100');
-        border-radius: 14px;
-        transition: background 0.18s;
-        box-shadow: 0 4px 18px rgba(10, 20, 40, 0.18);
-
-        &:hover {
-            background: theme('colors.primary.700');
-        }
-    }
-
-    &__epilogue-emoji {
-        font-size: 2rem;
-        line-height: 1;
-    }
-
-    &__epilogue-title {
-        margin: 0 0 0.2rem;
-        font-family: 'Noto Serif TC', serif;
-        font-size: 1.1rem;
-        color: theme('colors.gold.200');
-    }
-
-    &__epilogue-hook {
-        margin: 0;
-        font-size: 0.85rem;
-        opacity: 0.85;
-    }
-
-    &__epilogue-cta {
-        margin-left: auto;
-        font-size: 1.5rem;
-        color: theme('colors.gold.300');
-    }
-}
-</style>

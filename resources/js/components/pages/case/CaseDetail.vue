@@ -1,58 +1,77 @@
 <template>
-    <div v-if="caseItem" class="case-detail">
-        <RouterLink :to="{name: 'HOME_INDEX'}" class="case-detail__back">
+    <div v-if="caseItem">
+        <RouterLink
+            :to="{name: 'HOME_INDEX'}"
+            class="inline-block rounded-full bg-paper-200 px-3.5 py-1.5 text-sm text-primary-700 mb-6 transition-colors hover:bg-gold-200 hover:text-primary-800"
+        >
             ← 回到案件總覽
         </RouterLink>
 
-        <header class="case-detail__head" :style="{'--accent': accent}">
-            <div class="case-detail__meta">
-                <span class="case-detail__number">案 {{ caseItem.number }}</span>
-                <span class="case-detail__part-tag">{{ partInfo.emoji }} {{ partInfo.label }}</span>
+        <header
+            class="mb-7 rounded-[14px] border-l-[6px] bg-white px-7 pt-6 pb-7 shadow-[0_2px_12px_rgba(31,48,87,0.08)]"
+            :style="{borderColor: accent}"
+        >
+            <div class="flex items-center gap-2 text-xs text-gray-500">
+                <span class="font-serif font-bold" :style="{color: accent}">案 {{ caseItem.number }}</span>
+                <span class="rounded-full bg-paper-200 px-2 py-0.5">
+                    {{ partInfo.emoji }} {{ partInfo.label }}
+                </span>
+                <span
+                    v-if="caseItem.isAdult"
+                    class="rounded bg-seal-500 text-paper-100 text-[0.7rem] font-bold tracking-wider px-1.5 py-0.5"
+                >
+                    🔞 18+
+                </span>
             </div>
-            <h1 class="case-detail__title">
-                <span class="case-detail__emoji">{{ caseItem.emoji }}</span>
-                {{ caseItem.title }}
+            <h1 class="mt-2.5 mb-2 font-serif text-2xl font-bold leading-snug text-gray-900">
+                <span class="mr-2">{{ caseItem.emoji }}</span>{{ caseItem.title }}
             </h1>
-            <p class="case-detail__hook">{{ caseItem.hook }}</p>
+            <p class="m-0 text-[0.95rem] italic leading-relaxed text-gray-700">
+                {{ caseItem.hook }}
+            </p>
         </header>
 
-        <section class="case-detail__qa">
-            <div class="case-detail__bubble case-detail__bubble--user">
-                <div class="case-detail__role">我</div>
-                <div class="case-detail__bubble-body">{{ caseItem.question }}</div>
+        <section class="flex flex-col gap-5">
+            <div class="rounded-[14px] border-l-4 border-gray-400 bg-paper-200 px-7 py-5 shadow-[0_2px_12px_rgba(31,48,87,0.06)]">
+                <div class="font-serif font-bold text-gray-700 text-sm tracking-wider mb-2">我</div>
+                <div class="text-base leading-loose text-gray-800">{{ caseItem.question }}</div>
             </div>
 
-            <div class="case-detail__bubble case-detail__bubble--lawyer">
-                <div class="case-detail__role case-detail__role--lawyer">
-                    <span>⚖️</span> 律師
+            <div class="rounded-[14px] border-l-4 border-primary-700 bg-white px-7 py-5 shadow-[0_2px_12px_rgba(31,48,87,0.06)]">
+                <div class="flex items-center gap-1.5 font-serif font-bold text-primary-700 text-sm tracking-wider mb-2">
+                    <span class="text-base">⚖️</span> 律師
                 </div>
                 <MarkdownView :source="caseItem.answer" />
             </div>
         </section>
 
-        <nav class="case-detail__nav">
+        <nav class="mt-9 grid gap-3 grid-cols-1 sm:grid-cols-2">
             <RouterLink
                 v-if="prevCase"
                 :to="{name: 'CASE_DETAIL', params: {caseId: prevCase.id}}"
-                class="case-detail__nav-link case-detail__nav-link--prev"
+                class="flex flex-col gap-1 rounded-xl border border-paper-300 bg-white px-5 py-4 text-sm text-gray-700 transition-all hover:border-primary-500 hover:-translate-y-0.5"
             >
-                <span class="case-detail__nav-label">上一案</span>
-                <span class="case-detail__nav-title">{{ prevCase.number }} · {{ prevCase.title }}</span>
+                <span class="text-[0.72rem] tracking-widest text-gray-500">上一案</span>
+                <span class="font-serif font-bold text-primary-800">{{ prevCase.number }} · {{ prevCase.title }}</span>
             </RouterLink>
             <RouterLink
                 v-if="nextCase"
                 :to="{name: 'CASE_DETAIL', params: {caseId: nextCase.id}}"
-                class="case-detail__nav-link case-detail__nav-link--next"
+                class="flex flex-col gap-1 rounded-xl border border-paper-300 bg-white px-5 py-4 text-sm text-gray-700 transition-all hover:border-primary-500 hover:-translate-y-0.5 sm:text-right"
+                :class="{'sm:col-start-2': !prevCase}"
             >
-                <span class="case-detail__nav-label">下一案</span>
-                <span class="case-detail__nav-title">{{ nextCase.number }} · {{ nextCase.title }}</span>
+                <span class="text-[0.72rem] tracking-widest text-gray-500">下一案</span>
+                <span class="font-serif font-bold text-primary-800">{{ nextCase.number }} · {{ nextCase.title }}</span>
             </RouterLink>
         </nav>
     </div>
 
-    <div v-else class="case-detail__missing">
-        <p>找不到這個案件，可能網址錯了。</p>
-        <RouterLink :to="{name: 'HOME_INDEX'}" class="case-detail__back">
+    <div v-else class="text-center py-12 px-4 text-gray-600">
+        <p class="mb-6">找不到這個案件，可能網址錯了。</p>
+        <RouterLink
+            :to="{name: 'HOME_INDEX'}"
+            class="inline-block rounded-full bg-paper-200 px-3.5 py-1.5 text-sm text-primary-700 transition-colors hover:bg-gold-200"
+        >
             ← 回到案件總覽
         </RouterLink>
     </div>
@@ -104,192 +123,3 @@ export default {
     },
 };
 </script>
-
-<style lang="scss" scoped>
-.case-detail {
-    &__back {
-        display: inline-block;
-        padding: 0.4rem 0.85rem;
-        font-size: 0.85rem;
-        color: theme('colors.primary.700');
-        background: theme('colors.paper.200');
-        border-radius: 999px;
-        margin-bottom: 1.4rem;
-        transition: background 0.15s;
-
-        &:hover {
-            background: theme('colors.gold.200');
-            color: theme('colors.primary.800');
-        }
-    }
-
-    &__head {
-        --accent: theme('colors.primary.700');
-
-        padding: 1.4rem 1.6rem 1.6rem;
-        margin-bottom: 1.8rem;
-        background: theme('colors.white');
-        border-radius: 14px;
-        border-left: 6px solid var(--accent);
-        box-shadow: 0 2px 12px rgba(31, 48, 87, 0.08);
-    }
-
-    &__meta {
-        display: flex;
-        gap: 0.6rem;
-        align-items: center;
-        font-size: 0.78rem;
-        color: theme('colors.gray.500');
-    }
-
-    &__number {
-        font-family: 'Noto Serif TC', serif;
-        font-weight: 700;
-        color: var(--accent);
-    }
-
-    &__part-tag {
-        padding: 0.1rem 0.55rem;
-        background: theme('colors.paper.200');
-        border-radius: 999px;
-    }
-
-    &__title {
-        margin: 0.65rem 0 0.55rem;
-        font-family: 'Noto Serif TC', serif;
-        font-weight: 700;
-        font-size: 1.65rem;
-        color: theme('colors.gray.900');
-        line-height: 1.3;
-    }
-
-    &__emoji {
-        margin-right: 0.4rem;
-    }
-
-    &__hook {
-        margin: 0;
-        font-size: 0.95rem;
-        color: theme('colors.gray.700');
-        font-style: italic;
-        line-height: 1.65;
-    }
-
-    &__qa {
-        display: flex;
-        flex-direction: column;
-        gap: 1.3rem;
-    }
-
-    &__bubble {
-        padding: 1.2rem 1.4rem;
-        border-radius: 14px;
-        background: theme('colors.white');
-        box-shadow: 0 2px 12px rgba(31, 48, 87, 0.06);
-
-        &--user {
-            background: theme('colors.paper.200');
-            border-left: 4px solid theme('colors.gray.400');
-        }
-
-        &--lawyer {
-            border-left: 4px solid theme('colors.primary.700');
-        }
-    }
-
-    &__role {
-        font-family: 'Noto Serif TC', serif;
-        font-weight: 700;
-        color: theme('colors.gray.700');
-        margin-bottom: 0.5rem;
-        font-size: 0.92rem;
-        letter-spacing: 0.06em;
-
-        &--lawyer {
-            color: theme('colors.primary.700');
-            display: flex;
-            align-items: center;
-            gap: 0.35rem;
-
-            span {
-                font-size: 1.05rem;
-            }
-        }
-    }
-
-    &__bubble-body {
-        font-size: 0.98rem;
-        color: theme('colors.gray.800');
-        line-height: 1.85;
-    }
-
-    &__nav {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 0.85rem;
-        margin-top: 2.2rem;
-    }
-
-    &__nav-link {
-        display: flex;
-        flex-direction: column;
-        gap: 0.3rem;
-        padding: 0.95rem 1.1rem;
-        background: theme('colors.white');
-        border-radius: 12px;
-        border: 1px solid theme('colors.paper.300');
-        font-size: 0.86rem;
-        color: theme('colors.gray.700');
-        transition: border-color 0.15s, transform 0.15s;
-
-        &:hover {
-            border-color: theme('colors.primary.500');
-            transform: translateY(-2px);
-        }
-
-        &--next {
-            text-align: right;
-        }
-
-        &--prev:only-child {
-            grid-column: 1;
-        }
-
-        &--next:only-child {
-            grid-column: 2;
-        }
-    }
-
-    &__nav-label {
-        font-size: 0.72rem;
-        color: theme('colors.gray.500');
-        letter-spacing: 0.08em;
-    }
-
-    &__nav-title {
-        font-family: 'Noto Serif TC', serif;
-        font-weight: 700;
-        color: theme('colors.primary.800');
-    }
-
-    &__missing {
-        text-align: center;
-        padding: 3rem 1rem;
-        color: theme('colors.gray.600');
-
-        p {
-            margin-bottom: 1.5rem;
-        }
-    }
-}
-
-@media (max-width: 640px) {
-    .case-detail__nav {
-        grid-template-columns: 1fr;
-    }
-
-    .case-detail__nav-link--next {
-        text-align: left;
-    }
-}
-</style>

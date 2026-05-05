@@ -1,17 +1,45 @@
 <template>
     <RouterLink
         :to="{name: 'CASE_DETAIL', params: {caseId: caseItem.id}}"
-        class="case-card"
+        class="group relative block overflow-hidden rounded-[14px] border border-paper-300 bg-white px-5 pt-5 pb-5 shadow-[0_2px_8px_rgba(31,48,87,0.06)] transition-all duration-150 hover:-translate-y-0.5 hover:shadow-[0_6px_22px_rgba(31,48,87,0.13)]"
         :style="{'--accent': accent}"
+        :class="{'hover:border-[var(--accent)]': true}"
     >
-        <div class="case-card__head">
-            <span class="case-card__number">{{ caseItem.number }}</span>
-            <span class="case-card__emoji">{{ caseItem.emoji }}</span>
-            <span class="case-card__part">{{ partLabel }}</span>
+        <span
+            class="absolute top-0 left-0 h-full w-1 opacity-85"
+            :style="{background: 'var(--accent)'}"
+        />
+
+        <div class="flex items-center gap-2 text-xs text-gray-500">
+            <span
+                class="font-serif font-bold text-sm"
+                :style="{color: 'var(--accent)'}"
+            >
+                {{ caseItem.number }}
+            </span>
+            <span class="text-base leading-none">{{ caseItem.emoji }}</span>
+            <span
+                v-if="caseItem.isAdult"
+                class="rounded px-1.5 py-0.5 bg-seal-500 text-paper-100 text-[0.85rem] font-bold tracking-wider leading-none"
+            >
+                🔞
+            </span>
+            <span class="ml-auto rounded-full bg-paper-200 px-2 py-0.5 text-[0.7rem] text-gray-600">
+                {{ partLabel }}
+            </span>
         </div>
-        <h3 class="case-card__title">{{ caseItem.title }}</h3>
-        <p class="case-card__hook">{{ caseItem.hook }}</p>
-        <div class="case-card__cta">看律師怎麼說 →</div>
+
+        <h3 class="mt-2.5 mb-1.5 font-serif text-lg font-bold leading-snug text-gray-900">
+            {{ caseItem.title }}
+        </h3>
+
+        <p class="m-0 text-[0.88rem] leading-relaxed text-gray-600">
+            {{ caseItem.hook }}
+        </p>
+
+        <div class="mt-3 text-xs font-medium" :style="{color: 'var(--accent)'}">
+            看律師怎麼說 →
+        </div>
     </RouterLink>
 </template>
 
@@ -36,86 +64,3 @@ export default {
     },
 };
 </script>
-
-<style lang="scss" scoped>
-.case-card {
-    --accent: #3E5790;
-
-    display: block;
-    position: relative;
-    padding: 1.2rem 1.3rem 1.3rem;
-    border-radius: 14px;
-    background: theme('colors.white');
-    border: 1px solid theme('colors.paper.300');
-    box-shadow: 0 2px 8px rgba(31, 48, 87, 0.06);
-    transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
-    overflow: hidden;
-
-    &::before {
-        content: '';
-        position: absolute;
-        top: 0; left: 0;
-        width: 4px; height: 100%;
-        background: var(--accent);
-        opacity: 0.85;
-    }
-
-    &:hover {
-        transform: translateY(-2px);
-        border-color: var(--accent);
-        box-shadow: 0 6px 22px rgba(31, 48, 87, 0.13);
-    }
-
-    &__head {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        font-size: 0.78rem;
-        color: theme('colors.gray.500');
-    }
-
-    &__number {
-        font-family: 'Noto Serif TC', serif;
-        font-weight: 700;
-        font-size: 0.9rem;
-        color: var(--accent);
-    }
-
-    &__emoji {
-        font-size: 1.1rem;
-        line-height: 1;
-    }
-
-    &__part {
-        margin-left: auto;
-        padding: 0.1rem 0.55rem;
-        border-radius: 999px;
-        background: theme('colors.paper.200');
-        color: theme('colors.gray.600');
-        font-size: 0.7rem;
-    }
-
-    &__title {
-        margin: 0.55rem 0 0.4rem;
-        font-family: 'Noto Serif TC', serif;
-        font-weight: 700;
-        font-size: 1.1rem;
-        color: theme('colors.gray.900');
-        line-height: 1.4;
-    }
-
-    &__hook {
-        margin: 0;
-        font-size: 0.88rem;
-        color: theme('colors.gray.600');
-        line-height: 1.55;
-    }
-
-    &__cta {
-        margin-top: 0.9rem;
-        font-size: 0.82rem;
-        font-weight: 500;
-        color: var(--accent);
-    }
-}
-</style>
