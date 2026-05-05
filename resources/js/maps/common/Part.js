@@ -28,10 +28,16 @@ export const partMap = new EnumMap(Part, {
         blurb: '模仿、外貌、嘔吐——憲法替每個人撐起的傘。',
     },
     FINANCE: {
-        label: '金融、稅務與超自然',
+        label: '金融、稅務與商業詐欺',
         emoji: '💸',
         accent: '#A88216',
-        blurb: '通靈居士、移動城堡、女鬼之子：荒謬遇上實質課稅原則。',
+        blurb: '通靈大師、保健食品、羅賓漢詐騙——當金流碰上邊界。',
+    },
+    SUPERNATURAL: {
+        label: '超自然與奇幻法理',
+        emoji: '🪄',
+        accent: '#6E5C30',
+        blurb: '靈媒、長生種、移動城堡、鼠笛人：法律對「不存在的東西」如何審判。',
     },
 });
 
