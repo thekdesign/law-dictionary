@@ -1,11 +1,12 @@
 <template>
     <div v-if="caseItem">
-        <RouterLink
-            :to="{name: 'HOME_INDEX'}"
+        <button
+            type="button"
             class="inline-block rounded-full bg-paper-200 px-3.5 py-1.5 text-sm text-primary-700 mb-6 transition-colors hover:bg-gold-200 hover:text-primary-800"
+            @click="goBack"
         >
             ← 回到案件總覽
-        </RouterLink>
+        </button>
 
         <header
             class="mb-7 rounded-[14px] border-l-[6px] bg-white px-7 pt-6 pb-7 shadow-[0_2px_12px_rgba(31,48,87,0.08)]"
@@ -68,18 +69,19 @@
 
     <div v-else class="text-center py-12 px-4 text-gray-600">
         <p class="mb-6">找不到這個案件，可能網址錯了。</p>
-        <RouterLink
-            :to="{name: 'HOME_INDEX'}"
+        <button
+            type="button"
             class="inline-block rounded-full bg-paper-200 px-3.5 py-1.5 text-sm text-primary-700 transition-colors hover:bg-gold-200"
+            @click="goBack"
         >
             ← 回到案件總覽
-        </RouterLink>
+        </button>
     </div>
 </template>
 
 <script>
 import {computed, watch} from 'vue';
-import {useRoute} from 'vue-router';
+import {useRoute, useRouter} from 'vue-router';
 import {useCaseStore} from 'stores/case/case';
 import {partMap} from 'maps/common/Part';
 import MarkdownView from 'components/common/MarkdownView.vue';
@@ -89,7 +91,18 @@ export default {
     components: {MarkdownView},
     setup() {
         const route = useRoute();
+        const router = useRouter();
         const caseStore = useCaseStore();
+
+        // 若有可回退的歷史紀錄就用 back（保留來源頁的捲動位置），
+        // 否則 fallback 直接 push 到首頁（用戶從外部連結直接打開的情況）
+        const goBack = () => {
+            if (window.history.state?.back) {
+                router.back();
+            } else {
+                router.push({name: 'HOME_INDEX'});
+            }
+        };
 
         const caseId = computed(() => Number(route.params.caseId));
         const caseItem = computed(() => caseStore.getById(caseId.value));
@@ -119,6 +132,7 @@ export default {
             accent,
             prevCase,
             nextCase,
+            goBack,
         };
     },
 };

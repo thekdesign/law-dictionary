@@ -89,7 +89,7 @@ export default {
     }
 
     :deep(.md-anchor) {
-        @apply mr-1.5 text-gold-500 opacity-0 transition-opacity no-underline;
+        @apply mr-1.5 text-gold-500 opacity-0 transition-opacity no-underline cursor-pointer;
     }
 
     :deep(.md-h:hover .md-anchor) {
