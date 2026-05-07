@@ -47,14 +47,20 @@
 
         <section
             v-for="part in displayParts"
+            :id="`part-${part.key.toLowerCase()}`"
             :key="part.key"
-            class="mt-9"
+            class="mt-9 scroll-mt-20"
         >
             <header class="mb-4">
                 <h2
-                    class="m-0 mb-1 flex items-center gap-2 pb-2 font-serif text-xl font-bold text-gray-900 border-b-2"
+                    class="group m-0 mb-1 flex items-center gap-2 pb-2 font-serif text-xl font-bold text-gray-900 border-b-2"
                     :style="{borderColor: part.accent}"
                 >
+                    <a
+                        :href="`#part-${part.key.toLowerCase()}`"
+                        class="text-gold-500 opacity-0 transition-opacity no-underline cursor-pointer group-hover:opacity-70 hover:!opacity-100"
+                        aria-label="連結到此分類"
+                    >#</a>
                     <span class="text-2xl">{{ part.emoji }}</span>
                     {{ part.label }}
                 </h2>
@@ -65,7 +71,7 @@
             </div>
         </section>
 
-        <section v-if="adultCases.length" class="mt-10">
+        <section v-if="adultCases.length" id="part-adult" class="mt-10 scroll-mt-20">
             <button
                 v-if="!showAdult"
                 class="flex w-full items-center gap-4 rounded-[14px] border-2 border-dashed border-seal-400 bg-paper-100 px-5 py-4 text-left transition-colors hover:bg-seal-100 hover:border-seal-500"
