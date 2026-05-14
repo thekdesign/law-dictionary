@@ -32,7 +32,7 @@
                 <button
                     v-if="searchQuery"
                     type="button"
-                    class="absolute right-2 top-1/2 -translate-y-1/2 flex h-7 w-7 items-center justify-center rounded-full p-0 text-sm leading-none text-gray-500 hover:bg-paper-200 hover:text-primary-700"
+                    class="absolute inset-y-0 right-2 my-auto flex h-7 w-7 items-center justify-center rounded-full p-0 text-sm leading-none text-gray-500 hover:bg-paper-200 hover:text-primary-700"
                     aria-label="清除搜尋"
                     @click="searchQuery = ''"
                 >
