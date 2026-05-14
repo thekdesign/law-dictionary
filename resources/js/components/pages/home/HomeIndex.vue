@@ -21,6 +21,29 @@
             </div>
         </section>
 
+        <section class="mb-4">
+            <div class="relative">
+                <input
+                    v-model="searchQuery"
+                    type="search"
+                    placeholder="🔍 搜尋案件標題、關鍵字或法條（例：刑法 277、酒駕、寵物）"
+                    class="w-full rounded-full border border-paper-300 bg-white px-5 py-2.5 pr-12 text-sm text-gray-700 transition-colors placeholder:text-gray-400 focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-200"
+                />
+                <button
+                    v-if="searchQuery"
+                    type="button"
+                    class="absolute right-2 top-1/2 -translate-y-1/2 rounded-full px-2 py-0.5 text-gray-500 hover:bg-paper-200 hover:text-primary-700"
+                    aria-label="清除搜尋"
+                    @click="searchQuery = ''"
+                >
+                    ✕
+                </button>
+            </div>
+            <p v-if="searchQuery" class="mt-2 text-xs text-gray-600">
+                找到 <strong class="text-primary-700">{{ searchMatchCount }}</strong> 件相關案件<span v-if="searchAdultCount">（含 {{ searchAdultCount }} 件 18+，需展開區域才會顯示）</span>
+            </p>
+        </section>
+
         <section class="flex flex-wrap gap-1.5 mb-6">
             <button
                 class="rounded-full border px-4 py-1.5 text-sm transition-colors"
@@ -44,6 +67,11 @@
                 {{ p.emoji }} {{ p.label }}
             </button>
         </section>
+
+        <p v-if="searchQuery && !displayParts.length && !adultCases.length"
+           class="my-12 text-center text-gray-500 text-sm">
+            沒有符合「<strong class="text-primary-700">{{ searchQuery }}</strong>」的案件，試試別的關鍵字看看。
+        </p>
 
         <section
             v-for="part in displayParts"
@@ -139,15 +167,31 @@ export default {
         const caseStore = useCaseStore();
         const activePartKey = ref('');
         const showAdult = ref(false);
+        const searchQuery = ref('');
 
         const epilogue = computed(() => caseStore.list.find((c) => c.id === 99));
         const regularCases = computed(() => caseStore.list.filter((c) => c.id !== 99));
-        // 主網格只顯示非 18+ 案件
-        const safeCases = computed(() => regularCases.value.filter((c) => !c.isAdult));
-        // 18+ 案件單獨收進可摺疊區
+
+        // 關鍵字比對：number / title / hook / question / answer 全文找
+        const matchesSearch = (c) => {
+            const q = searchQuery.value.trim().toLowerCase();
+            if (!q) return true;
+            const haystack = [c.number, c.title, c.hook, c.question, c.answer]
+                .filter(Boolean)
+                .join(' ')
+                .toLowerCase();
+            return haystack.includes(q);
+        };
+
+        // 主網格只顯示非 18+ 且通過搜尋的案件
+        const safeCases = computed(() => regularCases.value
+            .filter((c) => !c.isAdult)
+            .filter(matchesSearch));
+        // 18+ 案件單獨收進可摺疊區（部別過濾 + 搜尋）
         const adultCases = computed(() => regularCases.value
             .filter((c) => c.isAdult)
-            .filter((c) => activePartKey.value === '' || c.partKey === activePartKey.value));
+            .filter((c) => activePartKey.value === '' || c.partKey === activePartKey.value)
+            .filter(matchesSearch));
 
         const displayParts = computed(() => {
             const grouped = safeCases.value.reduce((acc, c) => {
@@ -159,6 +203,12 @@ export default {
                 .map((p) => ({...p, cases: grouped[p.key] || []}))
                 .filter((p) => p.cases.length > 0);
         });
+
+        // 搜尋結果計數（顯示在輸入框底下）
+        const searchMatchCount = computed(() => regularCases.value.filter(matchesSearch).length);
+        const searchAdultCount = computed(() => regularCases.value
+            .filter((c) => c.isAdult)
+            .filter(matchesSearch).length);
 
         const confirmAdult = () => {
             if (window.confirm('本區內容涉及性、暴力或其他成人主題。\n您是否已年滿 18 歲？')) {
@@ -174,6 +224,9 @@ export default {
             adultCases,
             showAdult,
             confirmAdult,
+            searchQuery,
+            searchMatchCount,
+            searchAdultCount,
             epilogue,
         };
     },
