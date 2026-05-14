@@ -27,7 +27,7 @@
                     v-model="searchQuery"
                     type="search"
                     placeholder="🔍 搜尋案件標題、關鍵字或法條（例：刑法 277、酒駕、寵物）"
-                    class="w-full rounded-full border border-paper-300 bg-white px-5 py-2.5 pr-12 text-sm text-gray-700 transition-colors placeholder:text-gray-400 focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-200"
+                    class="w-full rounded-full border border-paper-300 bg-white px-5 py-2.5 pr-12 text-sm text-gray-700 transition-colors placeholder:text-gray-400 focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-200 [&::-webkit-search-cancel-button]:appearance-none [&::-webkit-search-decoration]:appearance-none"
                 />
                 <button
                     v-if="searchQuery"
