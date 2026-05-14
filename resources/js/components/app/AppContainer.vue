@@ -31,8 +31,23 @@
             <RouterView />
         </main>
 
-        <footer class="text-center px-4 py-5 text-xs text-gray-500">
-            僅供娛樂與學習，個案請洽執業律師
+        <footer class="text-center px-4 py-6 text-xs text-gray-500 space-y-2">
+            <div>僅供娛樂與學習，個案請洽執業律師</div>
+            <div class="flex justify-center flex-wrap gap-x-3 gap-y-1">
+                <a
+                    href="mailto:thek8014@proton.me?subject=%E3%80%90%E6%B3%95%E5%BE%8B%E5%A5%87%E6%83%B3%E3%80%91%E6%96%B0%E9%A1%8C%E7%9B%AE%E6%8A%95%E7%A8%BF"
+                    class="text-primary-700 hover:text-gold-600 transition-colors underline-offset-2 hover:underline"
+                >
+                    📨 投稿新題目
+                </a>
+                <span class="text-gray-400">·</span>
+                <a
+                    href="mailto:thek8014@proton.me?subject=%E3%80%90%E6%B3%95%E5%BE%8B%E5%A5%87%E6%83%B3%E3%80%91%E5%95%8F%E9%A1%8C%E5%8F%8D%E6%98%A0"
+                    class="text-primary-700 hover:text-gold-600 transition-colors underline-offset-2 hover:underline"
+                >
+                    🐛 反映問題
+                </a>
+            </div>
         </footer>
     </div>
 </template>
