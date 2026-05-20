@@ -1,0 +1,17 @@
+{
+    "name": "法律奇想終極全紀錄",
+    "short_name": "法律奇想",
+    "description": "60+ 場與幽默 AI 律師的奇案問答",
+    "icons": [
+        {"src": "/favicon-16.png", "sizes": "16x16", "type": "image/png"},
+        {"src": "/favicon-32.png", "sizes": "32x32", "type": "image/png"},
+        {"src": "/apple-touch-icon.png", "sizes": "180x180", "type": "image/png"},
+        {"src": "/icon-192.png", "sizes": "192x192", "type": "image/png"},
+        {"src": "/icon-512.png", "sizes": "512x512", "type": "image/png"},
+        {"src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml"}
+    ],
+    "theme_color": "#13203D",
+    "background_color": "#F4ECDA",
+    "display": "standalone",
+    "start_url": "/"
+}
