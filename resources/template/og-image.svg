@@ -1,0 +1,106 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+    <defs>
+        <!-- 主背景：深藍漸層 -->
+        <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#1F3057"/>
+            <stop offset="100%" stop-color="#0A1428"/>
+        </linearGradient>
+        <!-- 米紙質感（右側 quote 卡片） -->
+        <linearGradient id="paper" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#FBF8F1"/>
+            <stop offset="100%" stop-color="#F4ECDA"/>
+        </linearGradient>
+        <!-- 光暈 -->
+        <radialGradient id="glow" cx="30%" cy="40%" r="55%">
+            <stop offset="0%" stop-color="#3E5790" stop-opacity="0.45"/>
+            <stop offset="100%" stop-color="#0A1428" stop-opacity="0"/>
+        </radialGradient>
+    </defs>
+
+    <!-- 底色 -->
+    <rect width="1200" height="630" fill="url(#bg)"/>
+    <rect width="1200" height="630" fill="url(#glow)"/>
+
+    <!-- 散落的小裝飾星點 -->
+    <g fill="#F0DC92" opacity="0.4">
+        <circle cx="100" cy="80" r="2"/>
+        <circle cx="180" cy="160" r="1.5"/>
+        <circle cx="60" cy="250" r="1.8"/>
+        <circle cx="220" cy="340" r="1.5"/>
+        <circle cx="140" cy="500" r="2"/>
+        <circle cx="40" cy="440" r="1.5"/>
+        <circle cx="200" cy="580" r="1.8"/>
+        <circle cx="1100" cy="60" r="2"/>
+        <circle cx="1140" cy="180" r="1.5"/>
+        <circle cx="1080" cy="560" r="1.8"/>
+        <circle cx="1160" cy="430" r="1.5"/>
+    </g>
+
+    <!-- ============== 左側：天平 logo + 標題 ============== -->
+    <g transform="translate(80, 130)">
+        <!-- 天平 -->
+        <g transform="translate(0, 0) scale(1.6)">
+            <!-- 支柱 -->
+            <rect x="56" y="10" width="4" height="86" rx="2" fill="#E2C25A"/>
+            <!-- 頂寶石 -->
+            <circle cx="58" cy="8" r="5" fill="#F0DC92"/>
+            <circle cx="58" cy="8" r="1.8" fill="#13203D"/>
+            <!-- 橫桿 -->
+            <rect x="14" y="22" width="88" height="3.5" rx="1.75" fill="#E2C25A"/>
+            <!-- 繫繩 -->
+            <line x1="26" y1="25" x2="20" y2="50" stroke="#E2C25A" stroke-width="2" stroke-linecap="round"/>
+            <line x1="26" y1="25" x2="32" y2="50" stroke="#E2C25A" stroke-width="2" stroke-linecap="round"/>
+            <line x1="90" y1="25" x2="84" y2="50" stroke="#E2C25A" stroke-width="2" stroke-linecap="round"/>
+            <line x1="90" y1="25" x2="96" y2="50" stroke="#E2C25A" stroke-width="2" stroke-linecap="round"/>
+            <!-- 秤盤 -->
+            <path d="M 12 50 Q 26 64 40 50 Z" fill="#E2C25A"/>
+            <ellipse cx="26" cy="50" rx="14" ry="2" fill="#A88216"/>
+            <path d="M 76 50 Q 90 64 104 50 Z" fill="#E2C25A"/>
+            <ellipse cx="90" cy="50" rx="14" ry="2" fill="#A88216"/>
+            <!-- 底座 -->
+            <rect x="38" y="94" width="40" height="5" rx="2" fill="#E2C25A"/>
+            <rect x="46" y="99" width="24" height="3" rx="1.5" fill="#A88216"/>
+        </g>
+
+        <!-- 標題 -->
+        <text x="220" y="60" fill="#F0DC92" font-family="'Noto Serif TC', 'Songti TC', 'PingFang TC', serif"
+              font-weight="700" font-size="78" letter-spacing="4">法律奇想</text>
+        <text x="220" y="138" fill="#F0DC92" font-family="'Noto Serif TC', 'Songti TC', 'PingFang TC', serif"
+              font-weight="700" font-size="78" letter-spacing="4">終極全紀錄</text>
+
+        <!-- 金色裝飾線 -->
+        <rect x="220" y="160" width="120" height="3" fill="#E2C25A"/>
+
+        <!-- 副標 -->
+        <text x="220" y="200" fill="#C3CCE2" font-family="'Noto Sans TC', 'PingFang TC', sans-serif"
+              font-weight="400" font-size="32" letter-spacing="2">60+ 場與幽默 AI 律師的奇案問答</text>
+    </g>
+
+    <!-- ============== 右側：奇案速寫卡片 ============== -->
+    <g transform="translate(80, 380)">
+        <!-- 三句金句 -->
+        <g fill="#F4ECDA" font-family="'Noto Sans TC', 'PingFang TC', sans-serif" font-size="28" font-weight="300">
+            <!-- 第 1 列 -->
+            <g transform="translate(0, 0)">
+                <circle cx="-10" cy="-9" r="4" fill="#E2C25A"/>
+                <text x="6" y="0">「衛生紙打人，也是傷害罪」</text>
+            </g>
+            <!-- 第 2 列 -->
+            <g transform="translate(0, 50)">
+                <circle cx="-10" cy="-9" r="4" fill="#E2C25A"/>
+                <text x="6" y="0">「霍爾的移動城堡，法律上是會飛的露營車」</text>
+            </g>
+            <!-- 第 3 列 -->
+            <g transform="translate(0, 100)">
+                <circle cx="-10" cy="-9" r="4" fill="#E2C25A"/>
+                <text x="6" y="0">「芙莉蓮活得比法律時效還長」</text>
+            </g>
+        </g>
+    </g>
+
+    <!-- 右下角浮水印 -->
+    <text x="1140" y="600" text-anchor="end" fill="#9C998D"
+          font-family="'Noto Sans TC', 'PingFang TC', sans-serif" font-size="20" letter-spacing="2">
+        ⚖️ 認真講幹話的法律辭典
+    </text>
+</svg>
