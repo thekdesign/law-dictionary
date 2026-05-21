@@ -74,6 +74,26 @@
         </p>
 
         <section
+            v-if="showLatest"
+            id="part-latest"
+            class="mt-2 mb-8 scroll-mt-20"
+        >
+            <header class="mb-4">
+                <h2 class="group m-0 mb-1 flex items-center gap-2 pb-2 font-serif text-xl font-bold text-gray-900 border-b-2 border-gold-400">
+                    <a href="#part-latest"
+                       class="text-gold-500 opacity-0 transition-opacity no-underline cursor-pointer group-hover:opacity-70 hover:!opacity-100"
+                       aria-label="連結到此分類">#</a>
+                    <span class="text-2xl">🆕</span>
+                    最新案件
+                </h2>
+                <p class="m-0 text-sm text-gray-600">剛剛加進來的奇案，先看這幾篇</p>
+            </header>
+            <div class="grid gap-4 [grid-template-columns:repeat(auto-fill,minmax(280px,1fr))]">
+                <CaseCard v-for="c in latestCases" :key="c.id" :case-item="c" />
+            </div>
+        </section>
+
+        <section
             v-for="part in displayParts"
             :id="`part-${part.key.toLowerCase()}`"
             :key="part.key"
@@ -187,6 +207,14 @@ export default {
         const safeCases = computed(() => regularCases.value
             .filter((c) => !c.isAdult)
             .filter(matchesSearch));
+
+        // 最新案件（依 id 降序取前 6 件、排除 18+），僅在預設瀏覽模式顯示
+        const latestCases = computed(() => regularCases.value
+            .filter((c) => !c.isAdult)
+            .slice()
+            .sort((a, b) => b.id - a.id)
+            .slice(0, 6));
+        const showLatest = computed(() => !searchQuery.value.trim() && activePartKey.value === '');
         // 18+ 案件單獨收進可摺疊區（部別過濾 + 搜尋）
         const adultCases = computed(() => regularCases.value
             .filter((c) => c.isAdult)
@@ -227,6 +255,8 @@ export default {
             searchQuery,
             searchMatchCount,
             searchAdultCount,
+            latestCases,
+            showLatest,
             epilogue,
         };
     },
