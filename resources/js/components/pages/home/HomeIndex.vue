@@ -186,7 +186,7 @@
 </template>
 
 <script>
-import {ref, computed} from 'vue';
+import {ref, computed, watch} from 'vue';
 import {useCaseStore} from 'stores/case/case';
 import {partList} from 'maps/common/Part';
 import CaseCard from 'components/common/CaseCard.vue';
@@ -227,8 +227,24 @@ export default {
             .slice(0, 6));
         const showLatest = computed(() => !searchQuery.value.trim() && activePartKey.value === '');
 
-        // 部別區塊的摺疊狀態（預設全展開）
-        const collapsedParts = ref({});
+        // 部別區塊的摺疊狀態（從 localStorage 還原，預設全展開）
+        const COLLAPSED_KEY = 'lawdict.collapsedParts';
+        const loadCollapsed = () => {
+            try {
+                const raw = localStorage.getItem(COLLAPSED_KEY);
+                return raw ? JSON.parse(raw) : {};
+            } catch {
+                return {};
+            }
+        };
+        const collapsedParts = ref(loadCollapsed());
+        watch(collapsedParts, (v) => {
+            try {
+                localStorage.setItem(COLLAPSED_KEY, JSON.stringify(v));
+            } catch {
+                /* localStorage 滿或被禁用就忽略 */
+            }
+        }, {deep: true});
         const isCollapsed = (key) => !!collapsedParts.value[key];
         const togglePart = (key) => {
             collapsedParts.value = {...collapsedParts.value, [key]: !collapsedParts.value[key]};
