@@ -21,36 +21,27 @@
             </div>
         </section>
 
-        <section class="mb-4">
-            <div class="relative">
-                <input
-                    v-model="searchQuery"
-                    type="search"
-                    placeholder="🔍 搜尋案件標題、關鍵字或法條（例：刑法 277、酒駕、寵物）"
-                    class="w-full rounded-full border border-paper-300 bg-white px-5 py-2.5 pr-12 text-sm text-gray-700 transition-colors placeholder:text-gray-400 focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-200 [&::-webkit-search-cancel-button]:appearance-none [&::-webkit-search-decoration]:appearance-none"
-                />
+        <Transition name="fade">
+            <section v-if="filtersStore.searchQuery" class="mb-4 rounded-xl border border-paper-300 bg-white px-4 py-3 text-sm text-gray-700">
+                <span class="text-gray-500">搜尋「<strong class="text-primary-700">{{ filtersStore.searchQuery }}</strong>」：</span>
+                找到 <strong class="text-primary-700">{{ searchMatchCount }}</strong> 件<span v-if="searchAdultCount">（含 {{ searchAdultCount }} 件 18+）</span>
                 <button
-                    v-if="searchQuery"
                     type="button"
-                    class="absolute inset-y-0 right-2 my-auto flex h-7 w-7 items-center justify-center rounded-full p-0 text-sm leading-none text-gray-500 hover:bg-paper-200 hover:text-primary-700"
-                    aria-label="清除搜尋"
-                    @click="searchQuery = ''"
+                    class="ml-2 text-xs text-primary-600 underline-offset-2 hover:underline"
+                    @click="filtersStore.clearSearch()"
                 >
-                    ✕
+                    清除
                 </button>
-            </div>
-            <p v-if="searchQuery" class="mt-2 text-xs text-gray-600">
-                找到 <strong class="text-primary-700">{{ searchMatchCount }}</strong> 件相關案件<span v-if="searchAdultCount">（含 {{ searchAdultCount }} 件 18+，需展開區域才會顯示）</span>
-            </p>
-        </section>
+            </section>
+        </Transition>
 
         <section class="flex flex-wrap gap-1.5 mb-6">
             <button
                 class="rounded-full border px-4 py-1.5 text-sm transition-colors"
-                :class="activePartKey === ''
+                :class="filtersStore.activePartKey === ''
                     ? 'border-primary-500 bg-primary-500 text-white'
                     : 'border-paper-300 bg-white text-gray-700 hover:border-primary-500 hover:text-primary-500'"
-                @click="activePartKey = ''"
+                @click="filtersStore.activePartKey = ''"
             >
                 全部
             </button>
@@ -58,21 +49,24 @@
                 v-for="p in partList"
                 :key="p.key"
                 class="rounded-full border px-4 py-1.5 text-sm transition-colors"
-                :class="activePartKey === p.key ? 'text-white' : 'border-paper-300 bg-white text-gray-700'"
-                :style="activePartKey === p.key
+                :class="filtersStore.activePartKey === p.key ? 'text-white' : 'border-paper-300 bg-white text-gray-700'"
+                :style="filtersStore.activePartKey === p.key
                     ? {background: p.accent, borderColor: p.accent}
                     : {'--hover-accent': p.accent}"
-                @click="activePartKey = p.key"
+                @click="filtersStore.activePartKey = p.key"
             >
                 {{ p.emoji }} {{ p.label }}
             </button>
         </section>
 
-        <p v-if="searchQuery && !displayParts.length && !adultCases.length"
-           class="my-12 text-center text-gray-500 text-sm">
-            沒有符合「<strong class="text-primary-700">{{ searchQuery }}</strong>」的案件，試試別的關鍵字看看。
-        </p>
+        <Transition name="fade">
+            <p v-if="filtersStore.searchQuery && !displayParts.length && !adultCases.length"
+               class="my-12 text-center text-gray-500 text-sm">
+                沒有符合「<strong class="text-primary-700">{{ filtersStore.searchQuery }}</strong>」的案件，試試別的關鍵字看看。
+            </p>
+        </Transition>
 
+        <Transition name="fade">
         <section
             v-if="showLatest"
             id="part-latest"
@@ -92,6 +86,7 @@
                 <CaseCard v-for="c in latestCases" :key="c.id" :case-item="c" />
             </div>
         </section>
+        </Transition>
 
         <section
             v-for="part in displayParts"
@@ -117,22 +112,31 @@
                     <span>{{ part.label }}</span>
                     <span class="ml-auto flex items-center gap-2 text-sm font-normal text-gray-500">
                         <span>{{ part.cases.length }} 案</span>
-                        <span class="inline-block w-4 text-center transition-transform" :class="{'rotate-[-90deg]': isCollapsed(part.key)}">▾</span>
+                        <span class="inline-block w-4 text-center transition-transform duration-300" :class="{'rotate-[-90deg]': isCollapsed(part.key)}">▾</span>
                     </span>
                 </h2>
                 <p class="m-0 text-sm text-gray-600">{{ part.blurb }}</p>
             </header>
             <div
-                v-show="!isCollapsed(part.key)"
-                class="grid gap-4 [grid-template-columns:repeat(auto-fill,minmax(280px,1fr))]"
+                class="grid transition-[grid-template-rows] duration-300 ease-out"
+                :class="isCollapsed(part.key) ? 'grid-rows-[0fr]' : 'grid-rows-[1fr]'"
             >
-                <CaseCard v-for="c in part.cases" :key="c.id" :case-item="c" />
+                <div
+                    class="overflow-hidden transition-opacity duration-200"
+                    :class="isCollapsed(part.key) ? 'opacity-0' : 'opacity-100'"
+                >
+                    <div class="grid gap-4 [grid-template-columns:repeat(auto-fill,minmax(280px,1fr))]">
+                        <CaseCard v-for="c in part.cases" :key="c.id" :case-item="c" />
+                    </div>
+                </div>
             </div>
         </section>
 
         <section v-if="adultCases.length" id="part-adult" class="mt-10 scroll-mt-20">
+            <Transition name="fade" mode="out-in">
             <button
                 v-if="!showAdult"
+                key="adult-collapsed"
                 class="flex w-full items-center gap-4 rounded-[14px] border-2 border-dashed border-seal-400 bg-paper-100 px-5 py-4 text-left transition-colors hover:bg-seal-100 hover:border-seal-500"
                 @click="confirmAdult"
             >
@@ -148,7 +152,7 @@
                 <span class="whitespace-nowrap text-sm font-bold text-seal-600">展開 ▾</span>
             </button>
 
-            <div v-else class="rounded-[14px] border border-seal-300 bg-paper-100 px-5 pt-5 pb-6">
+            <div v-else key="adult-expanded" class="rounded-[14px] border border-seal-300 bg-paper-100 px-5 pt-5 pb-6">
                 <header class="mb-2 flex items-center">
                     <h2 class="m-0 flex items-center gap-1.5 font-serif text-xl text-seal-700">
                         <span class="text-xl">🔞</span> 18+ 案件區
@@ -167,6 +171,7 @@
                     <CaseCard v-for="c in adultCases" :key="c.id" :case-item="c" />
                 </div>
             </div>
+            </Transition>
         </section>
 
         <section v-if="epilogue" class="mt-10">
@@ -188,6 +193,7 @@
 <script>
 import {ref, computed, watch} from 'vue';
 import {useCaseStore} from 'stores/case/case';
+import {useFiltersStore} from 'stores/ui/filters';
 import {partList} from 'maps/common/Part';
 import CaseCard from 'components/common/CaseCard.vue';
 
@@ -196,16 +202,15 @@ export default {
     components: {CaseCard},
     setup() {
         const caseStore = useCaseStore();
-        const activePartKey = ref('');
+        const filtersStore = useFiltersStore();
         const showAdult = ref(false);
-        const searchQuery = ref('');
 
         const epilogue = computed(() => caseStore.list.find((c) => c.id === 99));
         const regularCases = computed(() => caseStore.list.filter((c) => c.id !== 99));
 
         // 關鍵字比對：number / title / hook / question / answer 全文找
         const matchesSearch = (c) => {
-            const q = searchQuery.value.trim().toLowerCase();
+            const q = filtersStore.searchQuery.trim().toLowerCase();
             if (!q) return true;
             const haystack = [c.number, c.title, c.hook, c.question, c.answer]
                 .filter(Boolean)
@@ -225,7 +230,7 @@ export default {
             .slice()
             .sort((a, b) => b.id - a.id)
             .slice(0, 6));
-        const showLatest = computed(() => !searchQuery.value.trim() && activePartKey.value === '');
+        const showLatest = computed(() => !filtersStore.searchQuery.trim() && filtersStore.activePartKey === '');
 
         // 部別區塊的摺疊狀態（從 localStorage 還原，預設全展開）
         const COLLAPSED_KEY = 'lawdict.collapsedParts';
@@ -252,7 +257,7 @@ export default {
         // 18+ 案件單獨收進可摺疊區（部別過濾 + 搜尋）
         const adultCases = computed(() => regularCases.value
             .filter((c) => c.isAdult)
-            .filter((c) => activePartKey.value === '' || c.partKey === activePartKey.value)
+            .filter((c) => filtersStore.activePartKey === '' || c.partKey === filtersStore.activePartKey)
             .filter(matchesSearch));
 
         const displayParts = computed(() => {
@@ -261,7 +266,7 @@ export default {
                 return acc;
             }, {});
             return partList
-                .filter((p) => activePartKey.value === '' || activePartKey.value === p.key)
+                .filter((p) => filtersStore.activePartKey === '' || filtersStore.activePartKey === p.key)
                 .map((p) => ({...p, cases: grouped[p.key] || []}))
                 .filter((p) => p.cases.length > 0);
         });
@@ -280,13 +285,12 @@ export default {
 
         return {
             caseStore,
+            filtersStore,
             partList,
-            activePartKey,
             displayParts,
             adultCases,
             showAdult,
             confirmAdult,
-            searchQuery,
             searchMatchCount,
             searchAdultCount,
             latestCases,
@@ -298,3 +302,15 @@ export default {
     },
 };
 </script>
+
+<style scoped>
+.fade-enter-active,
+.fade-leave-active {
+    transition: opacity 200ms ease, transform 200ms ease;
+}
+.fade-enter-from,
+.fade-leave-to {
+    opacity: 0;
+    transform: translateY(4px);
+}
+</style>

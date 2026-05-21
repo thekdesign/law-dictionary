@@ -1,35 +1,81 @@
 <template>
     <div class="flex flex-col min-h-screen">
         <header
-            class="sticky top-0 z-50 flex flex-wrap items-center gap-x-6 gap-y-2 px-5 py-3 bg-primary-800 text-paper-100 shadow-[0_4px_18px_rgba(10,20,40,0.18)] sm:px-6"
+            class="sticky top-0 z-50 flex items-center gap-4 px-4 py-3 bg-primary-800 text-paper-100 shadow-[0_4px_18px_rgba(10,20,40,0.18)] sm:px-6"
         >
-            <RouterLink :to="{name: 'HOME_INDEX'}" class="flex items-baseline gap-2">
+            <button
+                type="button"
+                class="inline-flex items-center justify-center w-9 h-9 -ml-1 rounded-full text-paper-100 transition-colors hover:bg-primary-700 hover:text-gold-200 lg:hidden"
+                aria-label="開啟選單"
+                @click="drawerOpen = true"
+            >
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+                    <line x1="4" y1="7" x2="20" y2="7" />
+                    <line x1="4" y1="12" x2="20" y2="12" />
+                    <line x1="4" y1="17" x2="20" y2="17" />
+                </svg>
+            </button>
+
+            <RouterLink :to="{name: 'HOME_INDEX'}" class="flex items-baseline gap-2 min-w-0">
                 <span class="text-2xl leading-none">⚖️</span>
-                <span class="font-serif font-bold text-base sm:text-lg tracking-wider">
+                <span class="font-serif font-bold text-base sm:text-lg tracking-wider truncate">
                     法律奇想終極全紀錄
                 </span>
-                <span class="hidden sm:inline text-xs opacity-75 tracking-wider">
+                <span class="hidden sm:inline text-xs opacity-75 tracking-wider whitespace-nowrap">
                     {{ caseStore.list.length - 1 }} 場奇案問答
                 </span>
             </RouterLink>
-
-            <nav class="flex gap-1 ml-auto">
-                <RouterLink
-                    v-for="item in mainNavList"
-                    :key="item.key"
-                    :to="{name: item.key}"
-                    class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm text-paper-200 transition-colors hover:bg-primary-700 hover:text-gold-200"
-                    active-class="!bg-gold-300 !text-primary-900 !font-bold"
-                >
-                    <span class="text-base">{{ item.icon }}</span>
-                    <span class="hidden sm:inline">{{ item.label }}</span>
-                </RouterLink>
-            </nav>
         </header>
 
-        <main class="flex-1 w-full max-w-[960px] mx-auto px-5 pt-7 pb-16">
-            <RouterView />
-        </main>
+        <div class="flex w-full max-w-[1280px] mx-auto px-4 lg:px-6 lg:gap-8 flex-1 min-w-0">
+            <aside
+                class="hidden lg:block w-60 shrink-0 sticky top-[68px] self-start max-h-[calc(100vh-80px)] overflow-y-auto py-7 pr-1"
+            >
+                <AppSidebar />
+            </aside>
+
+            <main class="flex-1 min-w-0 pt-7 pb-16 lg:pl-0">
+                <RouterView v-slot="{Component}">
+                    <Transition name="route-fade" mode="out-in">
+                        <component :is="Component" />
+                    </Transition>
+                </RouterView>
+            </main>
+        </div>
+
+        <!-- 手機版 drawer -->
+        <Teleport to="body">
+            <Transition name="mask-fade">
+                <div
+                    v-if="drawerOpen"
+                    class="fixed inset-0 z-[60] bg-primary-900/50 backdrop-blur-sm lg:hidden"
+                    @click="drawerOpen = false"
+                />
+            </Transition>
+            <Transition name="drawer-slide">
+                <aside
+                    v-if="drawerOpen"
+                    class="fixed top-0 left-0 z-[70] h-full w-[280px] max-w-[85vw] bg-paper-100 shadow-[8px_0_28px_rgba(10,20,40,0.18)] lg:hidden overflow-y-auto"
+                >
+                    <div class="flex items-center justify-between px-5 py-3 border-b border-paper-300 bg-paper-200">
+                        <span class="font-serif font-bold text-primary-800">
+                            <span class="mr-1.5">⚖️</span>選單
+                        </span>
+                        <button
+                            type="button"
+                            class="flex h-8 w-8 items-center justify-center rounded-full text-gray-600 hover:bg-paper-300 hover:text-primary-700"
+                            aria-label="關閉選單"
+                            @click="drawerOpen = false"
+                        >
+                            ✕
+                        </button>
+                    </div>
+                    <div class="px-4 py-5">
+                        <AppSidebar @navigate="drawerOpen = false" />
+                    </div>
+                </aside>
+            </Transition>
+        </Teleport>
 
         <footer class="text-center px-4 py-6 text-xs text-gray-500 space-y-2">
             <div>僅供娛樂與學習，個案請洽執業律師</div>
@@ -53,14 +99,66 @@
 </template>
 
 <script>
+import {ref, watch, onBeforeUnmount} from 'vue';
+import {useRoute} from 'vue-router';
 import {useCaseStore} from 'stores/case/case';
-import {mainNavList} from 'maps/navigation/MainNav';
+import AppSidebar from 'components/app/AppSidebar.vue';
 
 export default {
     name: 'AppContainer',
+    components: {AppSidebar},
     setup() {
         const caseStore = useCaseStore();
-        return {mainNavList, caseStore};
+        const route = useRoute();
+        const drawerOpen = ref(false);
+
+        // 換頁時自動關閉 drawer
+        watch(() => route.fullPath, () => {
+            drawerOpen.value = false;
+        });
+
+        // drawer 開啟時鎖住 body 滾動
+        watch(drawerOpen, (open) => {
+            document.body.style.overflow = open ? 'hidden' : '';
+        });
+        onBeforeUnmount(() => {
+            document.body.style.overflow = '';
+        });
+
+        return {caseStore, drawerOpen};
     },
 };
 </script>
+
+<style>
+.route-fade-enter-active,
+.route-fade-leave-active {
+    transition: opacity 200ms ease, transform 200ms ease;
+}
+.route-fade-enter-from {
+    opacity: 0;
+    transform: translateY(6px);
+}
+.route-fade-leave-to {
+    opacity: 0;
+    transform: translateY(-4px);
+}
+
+.mask-fade-enter-active,
+.mask-fade-leave-active {
+    transition: opacity 220ms ease;
+}
+.mask-fade-enter-from,
+.mask-fade-leave-to {
+    opacity: 0;
+}
+
+.drawer-slide-enter-active,
+.drawer-slide-leave-active {
+    transition: transform 260ms cubic-bezier(0.32, 0.72, 0.24, 1);
+}
+.drawer-slide-enter-from,
+.drawer-slide-leave-to {
+    transform: translateX(-100%);
+}
+</style>
