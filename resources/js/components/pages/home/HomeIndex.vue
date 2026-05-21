@@ -101,20 +101,31 @@
         >
             <header class="mb-4">
                 <h2
-                    class="group m-0 mb-1 flex items-center gap-2 pb-2 font-serif text-xl font-bold text-gray-900 border-b-2"
+                    class="group m-0 mb-1 flex items-center gap-2 pb-2 font-serif text-xl font-bold text-gray-900 border-b-2 cursor-pointer select-none"
                     :style="{borderColor: part.accent}"
+                    role="button"
+                    :aria-expanded="!isCollapsed(part.key)"
+                    @click="togglePart(part.key)"
                 >
                     <a
                         :href="`#part-${part.key.toLowerCase()}`"
                         class="text-gold-500 opacity-0 transition-opacity no-underline cursor-pointer group-hover:opacity-70 hover:!opacity-100"
                         aria-label="連結到此分類"
+                        @click.stop
                     >#</a>
                     <span class="text-2xl">{{ part.emoji }}</span>
-                    {{ part.label }}
+                    <span>{{ part.label }}</span>
+                    <span class="ml-auto flex items-center gap-2 text-sm font-normal text-gray-500">
+                        <span>{{ part.cases.length }} 案</span>
+                        <span class="inline-block w-4 text-center transition-transform" :class="{'rotate-[-90deg]': isCollapsed(part.key)}">▾</span>
+                    </span>
                 </h2>
                 <p class="m-0 text-sm text-gray-600">{{ part.blurb }}</p>
             </header>
-            <div class="grid gap-4 [grid-template-columns:repeat(auto-fill,minmax(280px,1fr))]">
+            <div
+                v-show="!isCollapsed(part.key)"
+                class="grid gap-4 [grid-template-columns:repeat(auto-fill,minmax(280px,1fr))]"
+            >
                 <CaseCard v-for="c in part.cases" :key="c.id" :case-item="c" />
             </div>
         </section>
@@ -215,6 +226,13 @@ export default {
             .sort((a, b) => b.id - a.id)
             .slice(0, 6));
         const showLatest = computed(() => !searchQuery.value.trim() && activePartKey.value === '');
+
+        // 部別區塊的摺疊狀態（預設全展開）
+        const collapsedParts = ref({});
+        const isCollapsed = (key) => !!collapsedParts.value[key];
+        const togglePart = (key) => {
+            collapsedParts.value = {...collapsedParts.value, [key]: !collapsedParts.value[key]};
+        };
         // 18+ 案件單獨收進可摺疊區（部別過濾 + 搜尋）
         const adultCases = computed(() => regularCases.value
             .filter((c) => c.isAdult)
@@ -257,6 +275,8 @@ export default {
             searchAdultCount,
             latestCases,
             showLatest,
+            isCollapsed,
+            togglePart,
             epilogue,
         };
     },
