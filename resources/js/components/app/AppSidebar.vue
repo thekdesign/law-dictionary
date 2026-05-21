@@ -70,11 +70,14 @@
         <div class="flex flex-col gap-0.5 pt-4 border-t border-paper-300">
             <h3 class="px-3 mb-1 text-[0.7rem] font-bold tracking-widest text-gray-500">回饋</h3>
             <a
-                href="mailto:thek8014@proton.me?subject=%E3%80%90%E6%B3%95%E5%BE%8B%E5%A5%87%E6%83%B3%E3%80%91%E6%96%B0%E9%A1%8C%E7%9B%AE%E6%8A%95%E7%A8%BF"
+                href="https://forms.gle/txn8WbYhYzdFgQ3E6"
+                target="_blank"
+                rel="noopener noreferrer"
                 class="flex items-center gap-2.5 rounded-lg px-3 py-2 text-gray-700 transition-colors hover:bg-paper-200 hover:text-primary-700"
             >
                 <span class="text-base leading-none">📨</span>
                 <span>投稿新題目</span>
+                <span class="ml-auto text-[0.7rem] text-gray-400">↗</span>
             </a>
             <a
                 href="mailto:thek8014@proton.me?subject=%E3%80%90%E6%B3%95%E5%BE%8B%E5%A5%87%E6%83%B3%E3%80%91%E5%95%8F%E9%A1%8C%E5%8F%8D%E6%98%A0"
