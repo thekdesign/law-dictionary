@@ -80,19 +80,15 @@
 </template>
 
 <script>
-import {computed, watch, onBeforeUnmount} from 'vue';
+import {computed, watch} from 'vue';
+import {useHead} from '@unhead/vue';
 import {useRoute, useRouter} from 'vue-router';
 import {useCaseStore} from 'stores/case/case';
 import {partMap} from 'maps/common/Part';
 import MarkdownView from 'components/common/MarkdownView.vue';
 
 const SITE_TITLE = '⚖️ 法律奇想終極全紀錄';
-const DEFAULT_DESCRIPTION = '法律奇想終極全紀錄：50 場與幽默 AI 律師的奇案問答。從衛生紙打人到女鬼生子、移動城堡到念能力打棒球，認真地討論最荒謬的法律情境。';
-
-const setMeta = (name, content) => {
-    const tag = document.querySelector(`meta[name="${name}"]`);
-    if (tag) tag.setAttribute('content', content);
-};
+const DEFAULT_DESCRIPTION = '法律奇想終極全紀錄：60+ 場與幽默 AI 律師的奇案問答。從衛生紙打人到女鬼生子、移動城堡到念能力打棒球，認真地討論最荒謬的法律情境。';
 
 export default {
     name: 'CaseDetail',
@@ -126,19 +122,27 @@ export default {
             ? sequentialList.value[currentIndex.value + 1]
             : null));
 
-        // 切換案件時：更新 document title、meta description、滾回頂端
-        watch(caseItem, (c) => {
-            if (!c) return;
-            document.title = `${c.number} · ${c.title}｜法律奇想終極全紀錄`;
-            // 用該案的 hook 當描述（沒有就退回題目本身），SEO/分享預覽更精準
-            setMeta('description', `${c.title}｜${c.hook || c.question}`);
-            window.scrollTo({top: 0, behavior: 'smooth'});
-        }, {immediate: true});
+        // SSR + client 共用 head 管理：用 useHead 動態設定 title/description
+        useHead({
+            title: computed(() => {
+                const c = caseItem.value;
+                return c ? `${c.number} · ${c.title}｜法律奇想終極全紀錄` : SITE_TITLE;
+            }),
+            meta: [
+                {
+                    name: 'description',
+                    content: computed(() => {
+                        const c = caseItem.value;
+                        return c ? `${c.title}｜${c.hook || c.question}` : DEFAULT_DESCRIPTION;
+                    }),
+                },
+            ],
+        });
 
-        // 離開詳情頁時還原預設 meta，避免被翻到首頁時殘留
-        onBeforeUnmount(() => {
-            document.title = SITE_TITLE;
-            setMeta('description', DEFAULT_DESCRIPTION);
+        // client-only：換案時捲到頂端
+        watch(caseItem, () => {
+            if (import.meta.env.SSR) return;
+            window.scrollTo({top: 0, behavior: 'smooth'});
         });
 
         return {

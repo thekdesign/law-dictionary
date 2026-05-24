@@ -14,7 +14,6 @@ export default defineConfig({
         extensions: ['.js', '.json', '.css', '.scss', '.vue'],
         alias: {
             apis: r('resources/js/apis'),
-            bootstrap: r('resources/js/bootstrap'),
             components: r('resources/js/components'),
             composables: r('resources/js/composables'),
             config: r('resources/js/config'),

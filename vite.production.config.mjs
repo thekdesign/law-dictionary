@@ -25,4 +25,20 @@ export default mergeConfig(common, {
             },
         },
     },
+    // vite-ssg 設定
+    ssgOptions: {
+        script: 'async',
+        formatting: 'minify',
+        // 顯式列出所有要 prerender 的 routes：首頁 + 404 + 所有 /cases/:id
+        async includedRoutes() {
+            const {cases} = await import('./resources/js/data/cases.js');
+            return [
+                '/',
+                '/404',
+                ...cases.map((c) => `/cases/${c.id}`),
+            ];
+        },
+        // SSR 時 mock 一些 client-only globals（雙保險）
+        mock: true,
+    },
 });

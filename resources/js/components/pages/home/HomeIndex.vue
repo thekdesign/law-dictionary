@@ -191,7 +191,7 @@
 </template>
 
 <script>
-import {ref, computed, watch} from 'vue';
+import {ref, computed, watch, onMounted} from 'vue';
 import {useCaseStore} from 'stores/case/case';
 import {useFiltersStore} from 'stores/ui/filters';
 import {partList} from 'maps/common/Part';
@@ -233,17 +233,19 @@ export default {
         const showLatest = computed(() => !filtersStore.searchQuery.trim() && filtersStore.activePartKey === '');
 
         // 部別區塊的摺疊狀態（從 localStorage 還原，預設全展開）
+        // SSR 階段沒有 localStorage，先用空物件 initial state，client mount 後再還原
         const COLLAPSED_KEY = 'lawdict.collapsedParts';
-        const loadCollapsed = () => {
+        const collapsedParts = ref({});
+        onMounted(() => {
             try {
                 const raw = localStorage.getItem(COLLAPSED_KEY);
-                return raw ? JSON.parse(raw) : {};
+                if (raw) collapsedParts.value = JSON.parse(raw);
             } catch {
-                return {};
+                /* 讀失敗就保持預設全展開 */
             }
-        };
-        const collapsedParts = ref(loadCollapsed());
+        });
         watch(collapsedParts, (v) => {
+            if (import.meta.env.SSR) return;
             try {
                 localStorage.setItem(COLLAPSED_KEY, JSON.stringify(v));
             } catch {
