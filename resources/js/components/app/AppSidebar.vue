@@ -66,6 +66,21 @@
             </button>
         </nav>
 
+        <!-- 友站 -->
+        <div class="flex flex-col gap-0.5 pt-4 border-t border-paper-300">
+            <h3 class="px-3 mb-1 text-[0.7rem] font-bold tracking-widest text-gray-500">友站</h3>
+            <a
+                href="https://boss-handbook.vercel.app/"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="flex items-center gap-2.5 rounded-lg px-3 py-2 text-gray-700 transition-colors hover:bg-paper-200 hover:text-primary-700"
+            >
+                <span class="text-base leading-none">🗂️</span>
+                <span>慣老闆常用手法手冊</span>
+                <span class="ml-auto text-[0.7rem] text-gray-400">↗</span>
+            </a>
+        </div>
+
         <!-- 投稿 / 反映 -->
         <div class="flex flex-col gap-0.5 pt-4 border-t border-paper-300">
             <h3 class="px-3 mb-1 text-[0.7rem] font-bold tracking-widest text-gray-500">回饋</h3>

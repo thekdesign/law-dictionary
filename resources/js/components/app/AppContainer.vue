@@ -88,6 +88,17 @@
                     🐛 反映問題
                 </a>
             </div>
+            <div class="flex justify-center items-center gap-2 pt-1">
+                <span class="text-[0.65rem] tracking-widest text-gray-400 uppercase">友站</span>
+                <a
+                    href="https://boss-handbook.vercel.app/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="text-primary-700 hover:text-gold-600 transition-colors underline-offset-2 hover:underline"
+                >
+                    🗂️ 慣老闆常用手法手冊 ↗
+                </a>
+            </div>
         </footer>
     </div>
 </template>
