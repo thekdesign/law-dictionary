@@ -5,7 +5,7 @@
         >
             <button
                 type="button"
-                class="inline-flex items-center justify-center w-9 h-9 -ml-1 rounded-full text-paper-100 transition-colors hover:bg-primary-700 hover:text-gold-200 lg:hidden"
+                class="inline-flex items-center justify-center w-9 h-9 -ml-1 rounded-full text-paper-100 transition-colors hover:bg-primary-700 hover:text-gold-200"
                 aria-label="開啟選單"
                 @click="drawerOpen = true"
             >
@@ -27,35 +27,27 @@
             </RouterLink>
         </header>
 
-        <div class="flex w-full max-w-[1280px] mx-auto px-4 lg:px-6 lg:gap-8 flex-1 min-w-0">
-            <aside
-                class="hidden lg:block w-60 shrink-0 sticky top-[68px] self-start max-h-[calc(100vh-80px)] overflow-y-auto py-7 pr-1"
-            >
-                <AppSidebar />
-            </aside>
+        <main class="flex-1 w-full max-w-[960px] mx-auto px-5 pt-7 pb-16 min-w-0">
+            <RouterView v-slot="{Component}">
+                <Transition name="route-fade" mode="out-in">
+                    <component :is="Component" />
+                </Transition>
+            </RouterView>
+        </main>
 
-            <main class="flex-1 min-w-0 pt-7 pb-16 lg:pl-0">
-                <RouterView v-slot="{Component}">
-                    <Transition name="route-fade" mode="out-in">
-                        <component :is="Component" />
-                    </Transition>
-                </RouterView>
-            </main>
-        </div>
-
-        <!-- 手機版 drawer -->
+        <!-- 側邊選單 drawer（手機與桌面共用） -->
         <Teleport to="body">
             <Transition name="mask-fade">
                 <div
                     v-if="drawerOpen"
-                    class="fixed inset-0 z-[60] bg-primary-900/50 backdrop-blur-sm lg:hidden"
+                    class="fixed inset-0 z-[60] bg-primary-900/50 backdrop-blur-sm"
                     @click="drawerOpen = false"
                 />
             </Transition>
             <Transition name="drawer-slide">
                 <aside
                     v-if="drawerOpen"
-                    class="fixed top-0 left-0 z-[70] h-full w-[280px] max-w-[85vw] bg-paper-100 shadow-[8px_0_28px_rgba(10,20,40,0.18)] lg:hidden overflow-y-auto"
+                    class="fixed top-0 left-0 z-[70] h-full w-[280px] max-w-[85vw] bg-paper-100 shadow-[8px_0_28px_rgba(10,20,40,0.18)] overflow-y-auto"
                 >
                     <div class="flex items-center justify-between px-5 py-3 border-b border-paper-300 bg-paper-200">
                         <span class="font-serif font-bold text-primary-800">
